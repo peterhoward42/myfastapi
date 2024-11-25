@@ -1,5 +1,8 @@
-from fastapi import FastAPI
 from enum import Enum
+from typing import Annotated, Literal
+
+from fastapi import FastAPI, Query
+from pydantic import BaseModel, Field
 
 app = FastAPI()
 
@@ -60,3 +63,60 @@ async def read_abc(abc_id: str, q: str | None = None):
     if q:
         return {"abc_id": abc_id, "q": q}
     return {"abc_id": abc_id}
+
+
+"""
+Read request body (for POST) using a pydantic.BaseModel
+"""
+class Widget(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+@app.post("/widgets/")
+async def create_widget(widget: Widget):
+    return widget
+
+
+"""
+If you wrap types with Annotated, you get access to new forms of validation.
+See VSCode intellisense to see other forms for Query.
+E.g. gt/lt, and "match" (regex).
+"""
+@app.get("/annotated/")
+async def annotated(q: Annotated[str | None, Query(max_length=4)] = None):
+    if q:
+        return {"q_value": q}
+    return {"q_value": "n/a"}
+
+"""
+Notes on Annotated Query and Path
+
+You would struggle to define a query param called "item-query" because
+the argument to the function would then have an illegal name.
+But you can achieve that by aliasing it:
+    read_items(q: Annotated[str | None, Query(alias="item-query")] = None)
+
+See also the Path alt to Query for similar semantics.
+"""
+
+
+"""
+Modelling using nested pydantic models and native container types.
+"""
+class Image(BaseModel):
+    url: str
+    name: str
+
+class Item(BaseModel):
+    name: str
+    description: str | None = None
+    price: float
+    tax: float | None = None
+    tags: set[str] = set()
+    image: Image | None = None
+
+@app.put("/nested_models/{item_id}")
+async def update_nested(item_id: int, item: Item):
+    results = {"item_id": item_id, "item": item}
+    return results
