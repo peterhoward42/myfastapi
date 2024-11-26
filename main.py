@@ -120,3 +120,25 @@ class Item(BaseModel):
 async def update_nested(item_id: int, item: Item):
     results = {"item_id": item_id, "item": item}
     return results
+
+    """
+    Some extra features to explore
+
+    - Declare default values for requests.
+    - Less common supported types like: DateTime, UUID.
+    - You can define a request input as of type Cookie.
+    - Or specify a group of Cookies using a Pydantic model.
+    - You can define a request input as of type Header [filed expected in header]
+    - You can modelise the Response.
+    - You can specify that a handler expects a file input.
+    - You signal errors from handler logic by raising a fastAPI.HTTPException.
+    - Direct support for all kinds of auth.
+    - Custom middleware - like timing the handler.
+    - CORS middleware - most APIs likely need to all the "*" origin.
+    - Fabulous looking SQL database ORM (first-class) integration
+    - Post response background tasks.
+    - Static files  
+    
+    """
+
+    
