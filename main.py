@@ -4,6 +4,9 @@ from typing import Annotated, Literal
 from fastapi import FastAPI, Query
 from pydantic import BaseModel, Field
 
+from fastapi.testclient import TestClient
+
+
 app = FastAPI()
 
 """
@@ -140,5 +143,18 @@ async def update_nested(item_id: int, item: Item):
     - Static files  
     
     """
+
+"""
+Play around with testing
+"""
+def test_plain_python():
+        assert 3 == 3
+
+client = TestClient(app)
+
+def test_read_main():
+    response = client.get("/")
+    assert response.status_code == 200
+    assert response.json() == {"message": "Hello World"}
 
     
