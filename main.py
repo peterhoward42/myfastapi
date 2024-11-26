@@ -1,10 +1,23 @@
+"""
+Note that this does not have an entry point function main().
+
+Instead your run fastapi dev main.py
+
+The composition is:
+-  this main.py gets imported in a uvicorn server.
+-  the unvicorn server is run
+-  the fast api program does UI magic with the terminal 
+
+"""
+
 from enum import Enum
 from typing import Annotated, Literal
 
-from fastapi import FastAPI, Query
+from fastapi import FastAPI, Query  
 from pydantic import BaseModel, Field
 
 from fastapi.testclient import TestClient
+import uvicorn
 
 
 app = FastAPI()
@@ -157,4 +170,11 @@ def test_read_main():
     assert response.status_code == 200
     assert response.json() == {"message": "Hello World"}
 
-    
+
+"""
+Use this form below if you want to use the debugger easily in
+VSCode
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="0.0.0.0", port=8000)
+"""
